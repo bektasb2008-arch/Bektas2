@@ -1,0 +1,1600 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ExamFlow — Полная подготовка к экзаменам</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg-dark: #0a0e27;
+  --bg-darker: #050710;
+  --surface1: #141829;
+  --surface2: #1d233f;
+  --border: #2a3250;
+  --accent1: #6366f1;
+  --accent2: #8b5cf6;
+  --accent3: #10b981;
+  --accent4: #f59e0b;
+  --accent5: #ef4444;
+  --text-primary: #f0f4f8;
+  --text-secondary: #a8aec6;
+  --text-muted: #6b7280;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-darker) 100%);
+  color: var(--text-primary);
+  font-family: 'Outfit', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at 20% 50%, rgba(99, 102, 241, .1) 0%, transparent 50%),
+              radial-gradient(circle at 80% 80%, rgba(139, 92, 246, .1) 0%, transparent 50%);
+  animation: gradientShift 8s ease-in-out infinite;
+  pointer-events: none;
+  z-index: -1;
+}
+
+@keyframes gradientShift {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(50px, 50px); }
+}
+
+.container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+.screen { display: none; animation: fadeIn .6s ease-out; }
+.screen.active { display: block; }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* ════ HOME SCREEN ════ */
+#home-screen {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 60px 20px;
+}
+
+.hero {
+  text-align: center;
+  margin-bottom: 80px;
+  animation: slideUp .8s ease-out;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.logo-container {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 40px;
+  background: linear-gradient(135deg, var(--accent1), var(--accent2));
+  border-radius: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 50px;
+  box-shadow: 0 20px 60px rgba(99, 102, 241, .3);
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+h1 {
+  font-size: clamp(32px, 7vw, 64px);
+  font-weight: 900;
+  line-height: 1.1;
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, var(--text-primary), var(--accent1));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -1px;
+}
+
+.tagline {
+  font-size: 18px;
+  color: var(--text-secondary);
+  margin-bottom: 48px;
+  font-weight: 300;
+  line-height: 1.6;
+}
+
+.modules-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+  margin-bottom: 60px;
+}
+
+.module-card {
+  background: var(--surface1);
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  padding: 40px 32px;
+  cursor: pointer;
+  transition: all .3s ease;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.module-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .1), transparent);
+  transition: left .6s ease;
+}
+
+.module-card:hover::before { left: 100%; }
+
+.module-card:hover {
+  border-color: var(--accent1);
+  transform: translateY(-8px);
+  box-shadow: 0 30px 60px rgba(99, 102, 241, .2);
+}
+
+.module-icon {
+  font-size: 48px;
+  margin-bottom: 20px;
+}
+
+.module-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.module-desc {
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin-bottom: 20px;
+  flex-grow: 1;
+  line-height: 1.6;
+}
+
+.module-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.module-tag {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+
+.btn-module {
+  background: linear-gradient(135deg, var(--accent1), var(--accent2));
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 24px;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all .3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+
+.btn-module:hover {
+  transform: scale(1.05);
+  box-shadow: 0 15px 40px rgba(99, 102, 241, .4);
+}
+
+.footer {
+  text-align: center;
+  padding-top: 40px;
+  border-top: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+/* ════ QUIZ SCREEN ════ */
+.quiz-container {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.quiz-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+}
+
+.quiz-back {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--surface1);
+  border: 1.5px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all .2s ease;
+  font-size: 20px;
+}
+
+.quiz-back:hover {
+  border-color: var(--accent1);
+  transform: translateX(-4px);
+}
+
+.quiz-info {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.q-counter {
+  font-family: 'Courier Prime', monospace;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.q-counter strong {
+  font-size: 18px;
+  color: var(--accent1);
+  font-weight: 700;
+}
+
+.progress-bar {
+  flex: 1;
+  height: 6px;
+  background: var(--surface2);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent1), var(--accent2));
+  width: 0%;
+  transition: width .4s ease;
+  border-radius: 10px;
+}
+
+.timer-display {
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 16px;
+  font-family: 'Courier Prime', monospace;
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--accent1);
+  min-width: 60px;
+  text-align: center;
+  transition: all .2s ease;
+  display: none;
+}
+
+.timer-display.warn {
+  color: var(--accent5);
+  border-color: var(--accent5);
+  box-shadow: 0 0 20px rgba(239, 68, 68, .3);
+}
+
+.score-live {
+  background: linear-gradient(135deg, var(--accent3), var(--accent4));
+  color: white;
+  border-radius: 10px;
+  padding: 8px 16px;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.question-card {
+  background: var(--surface1);
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  padding: 40px 36px;
+  margin-bottom: 28px;
+  animation: slideUp .4s ease-out;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, .3);
+}
+
+.q-badge {
+  display: inline-block;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: .8px;
+  margin-bottom: 20px;
+}
+
+.q-text {
+  font-size: clamp(16px, 3vw, 22px);
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--text-primary);
+  margin-bottom: 0;
+}
+
+.q-text code {
+  font-family: 'Courier Prime', monospace;
+  background: rgba(99, 102, 241, .15);
+  color: var(--accent1);
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: .95em;
+}
+
+.options-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 32px 0;
+}
+
+.option-btn {
+  background: var(--surface2);
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  padding: 16px 18px;
+  text-align: left;
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+  cursor: pointer;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  line-height: 1.5;
+  transition: all .2s ease;
+  position: relative;
+}
+
+.option-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, transparent, rgba(255, 255, 255, .05));
+  border-radius: 12px;
+  pointer-events: none;
+}
+
+.option-btn:hover:not(:disabled) {
+  border-color: var(--accent1);
+  background: rgba(99, 102, 241, .1);
+  transform: translateY(-2px);
+}
+
+.option-letter {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: var(--surface1);
+  border: 1.5px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Courier Prime', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent1);
+  flex-shrink: 0;
+  transition: all .2s ease;
+}
+
+.option-btn code {
+  font-family: 'Courier Prime', monospace;
+  background: rgba(99, 102, 241, .15);
+  color: var(--accent1);
+  padding: 2px 6px;
+  border-radius: 5px;
+  font-size: .9em;
+}
+
+.option-btn.correct {
+  border-color: var(--accent3);
+  background: rgba(16, 185, 129, .1);
+}
+
+.option-btn.correct .option-letter {
+  background: var(--accent3);
+  color: white;
+  border-color: var(--accent3);
+}
+
+.option-btn.wrong {
+  border-color: var(--accent5);
+  background: rgba(239, 68, 68, .1);
+}
+
+.option-btn.wrong .option-letter {
+  background: var(--accent5);
+  color: white;
+  border-color: var(--accent5);
+}
+
+.option-btn:disabled { cursor: default; }
+
+.quiz-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.btn-skip {
+  flex: 1;
+  background: transparent;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 13px 20px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all .2s ease;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+
+.btn-skip:hover {
+  border-color: var(--text-primary);
+  color: var(--text-primary);
+}
+
+.btn-next {
+  flex: 2;
+  background: linear-gradient(135deg, var(--accent1), var(--accent2));
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 13px 20px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  display: none;
+  transition: all .2s ease;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+
+.btn-next.visible { display: block; }
+
+.btn-next:hover {
+  transform: scale(1.02);
+  box-shadow: 0 10px 30px rgba(99, 102, 241, .3);
+}
+
+.toast {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--surface1);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  opacity: 0;
+  transition: all .4s cubic-bezier(.34, 1.56, .64, 1);
+  pointer-events: none;
+  z-index: 1000;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.toast.correct {
+  border-color: var(--accent3);
+  color: var(--accent3);
+}
+
+.toast.wrong {
+  border-color: var(--accent5);
+  color: var(--accent5);
+}
+
+/* ════ RESULT SCREEN ════ */
+.result-container {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.result-ring {
+  position: relative;
+  width: 160px;
+  height: 160px;
+  margin: 0 auto 40px;
+}
+
+.result-ring svg { transform: rotate(-90deg); }
+
+.ring-bg {
+  fill: none;
+  stroke: var(--surface2);
+  stroke-width: 10;
+}
+
+.ring-progress {
+  fill: none;
+  stroke: url(#gradient);
+  stroke-width: 10;
+  stroke-linecap: round;
+  stroke-dasharray: 502;
+  stroke-dashoffset: 502;
+  transition: stroke-dashoffset 1.5s cubic-bezier(.34, 1.56, .64, 1);
+}
+
+.result-percent {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Courier Prime', monospace;
+  font-size: 48px;
+  font-weight: 700;
+  color: var(--accent1);
+}
+
+.result-percent small {
+  font-size: 20px;
+  color: var(--text-secondary);
+}
+
+.result-title {
+  font-size: clamp(24px, 5vw, 40px);
+  font-weight: 900;
+  margin-bottom: 12px;
+  background: linear-gradient(135deg, var(--text-primary), var(--accent1));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.result-subtitle {
+  color: var(--text-secondary);
+  font-size: 15px;
+  margin-bottom: 48px;
+  line-height: 1.6;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 48px;
+}
+
+.stat-box {
+  background: var(--surface1);
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  padding: 24px 16px;
+  transition: all .3s ease;
+}
+
+.stat-box:hover {
+  border-color: var(--accent1);
+  transform: translateY(-4px);
+}
+
+.stat-number {
+  font-family: 'Courier Prime', monospace;
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.stat-box.correct .stat-number { color: var(--accent3); }
+.stat-box.wrong .stat-number { color: var(--accent5); }
+.stat-box.skip .stat-number { color: var(--accent4); }
+
+.stat-label {
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+
+.mistakes-section {
+  background: var(--surface1);
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  padding: 32px;
+  text-align: left;
+  margin-bottom: 40px;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.mistakes-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--accent5);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mistake-item {
+  border-bottom: 1px solid var(--border);
+  padding: 16px 0;
+}
+
+.mistake-item:last-child { border-bottom: none; }
+
+.mistake-question {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.mistake-question code {
+  font-family: 'Courier Prime', monospace;
+  background: rgba(99, 102, 241, .15);
+  color: var(--accent1);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.mistake-answer {
+  font-size: 12px;
+  color: var(--accent3);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mistake-answer code {
+  font-family: 'Courier Prime', monospace;
+  background: rgba(16, 185, 129, .15);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.result-buttons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.btn-again {
+  background: linear-gradient(135deg, var(--accent1), var(--accent2));
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 16px 32px;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all .3s ease;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+
+.btn-again:hover {
+  transform: scale(1.05);
+  box-shadow: 0 15px 40px rgba(99, 102, 241, .4);
+}
+
+.btn-mistakes {
+  background: transparent;
+  color: var(--text-primary);
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  padding: 16px 32px;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all .3s ease;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  display: none;
+}
+
+.btn-mistakes:hover {
+  border-color: var(--accent1);
+  color: var(--accent1);
+}
+
+.btn-mistakes.visible { display: inline-block; }
+
+/* Setup screen */
+.setup-container {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 60px 20px;
+}
+
+.setup-header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.setup-header h2 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.setup-header p {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.setup-section {
+  margin-bottom: 48px;
+}
+
+.setup-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: .8px;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.setup-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.setup-card {
+  background: var(--surface2);
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  padding: 18px 12px;
+  cursor: pointer;
+  text-align: center;
+  transition: all .2s ease;
+}
+
+.setup-card:hover {
+  border-color: var(--accent1);
+  transform: translateY(-2px);
+}
+
+.setup-card.selected {
+  border-color: var(--accent1);
+  background: rgba(99, 102, 241, .1);
+}
+
+.setup-icon {
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+
+.setup-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.setup-desc {
+  font-size: 10px;
+  color: var(--text-secondary);
+}
+
+.btn-start {
+  width: 100%;
+  background: linear-gradient(135deg, var(--accent1), var(--accent2));
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 16px;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  transition: all .3s ease;
+  margin-top: 48px;
+}
+
+.btn-start:hover {
+  transform: scale(1.02);
+  box-shadow: 0 15px 40px rgba(99, 102, 241, .3);
+}
+
+@media (max-width: 600px) {
+  .options-grid { grid-template-columns: 1fr; }
+  .setup-grid { grid-template-columns: 1fr; }
+  .stats-grid { grid-template-columns: 1fr; }
+  .quiz-header { gap: 8px; }
+  .quiz-info { gap: 10px; flex-direction: column; align-items: flex-start; }
+  .progress-bar { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- HOME SCREEN -->
+<div id="home-screen" class="screen active">
+  <div>
+    <div class="hero">
+      <div class="logo-container">📚</div>
+      <h1>ExamFlow</h1>
+      <p class="tagline">Комплексная подготовка к экзаменам<br>с анализом ошибок и персональной статистикой</p>
+    </div>
+
+    <div class="container">
+      <div class="modules-grid">
+        <!-- Module 1 -->
+        <div class="module-card" onclick="selectModule('ux')">
+          <div class="module-icon">🎨</div>
+          <div class="module-title">UX/UI & 3D</div>
+          <p class="module-desc">Дизайн, графика, 3D-моделирование и цифровые реальности</p>
+          <div class="module-tags">
+            <span class="module-tag">100 вопросов</span>
+            <span class="module-tag">UX/UI</span>
+            <span class="module-tag">3D</span>
+          </div>
+          <button class="btn-module">Начать →</button>
+        </div>
+
+        <!-- Module 2 -->
+        <div class="module-card" onclick="selectModule('pm02')">
+          <div class="module-icon">💻</div>
+          <div class="module-title">ПМ-02</div>
+          <p class="module-desc">HTML, CSS, JavaScript, PHP и SQL для веб-разработки</p>
+          <div class="module-tags">
+            <span class="module-tag">100 вопросов</span>
+            <span class="module-tag">Web</span>
+            <span class="module-tag">Backend</span>
+          </div>
+          <button class="btn-module">Начать →</button>
+        </div>
+
+        <!-- Module 3 -->
+        <div class="module-card" onclick="selectModule('csharp')">
+          <div class="module-icon">⚙️</div>
+          <div class="module-title">C# & Мобильные приложения</div>
+          <p class="module-desc">C#, Windows Forms, React Native и разработка приложений</p>
+          <div class="module-tags">
+            <span class="module-tag">100 вопросов</span>
+            <span class="module-tag">C#</span>
+            <span class="module-tag">Mobile</span>
+          </div>
+          <button class="btn-module">Начать →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="footer">
+      © 2024 ExamFlow. Учись эффективнее, сдавай уверенней. 300 вопросов по трём модулям. Удачи! 🚀
+    </div>
+  </div>
+</div>
+
+<!-- SETUP SCREEN -->
+<div id="setup-screen" class="screen">
+  <div class="setup-container">
+    <div class="setup-header">
+      <button class="quiz-back" onclick="goHome()" style="position: absolute; top: 20px; left: 20px;">←</button>
+      <h2 id="setup-title">Подготовка</h2>
+      <p id="setup-desc">Выберите режим и начните учиться</p>
+    </div>
+
+    <div class="setup-section">
+      <label class="setup-label">Количество вопросов</label>
+      <div class="setup-grid" id="mode-grid"></div>
+    </div>
+
+    <div class="setup-section">
+      <label class="setup-label">Таймер на вопрос</label>
+      <div class="setup-grid" id="timer-grid"></div>
+    </div>
+
+    <button class="btn-start" onclick="startQuiz()">Начать тест →</button>
+  </div>
+</div>
+
+<!-- QUIZ SCREEN -->
+<div id="quiz-screen" class="screen">
+  <div class="quiz-container">
+    <div class="quiz-header">
+      <div class="quiz-back" onclick="goHome()">←</div>
+      <div class="quiz-info">
+        <div class="q-counter">Вопрос <strong id="q-num">1</strong> <span style="color: var(--text-muted)">/ <span id="q-total">100</span></span></div>
+        <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+        <div class="timer-display" id="timer">—</div>
+        <div class="score-live">✓ <span id="score">0</span></div>
+      </div>
+    </div>
+
+    <div class="question-card">
+      <div class="q-badge" id="q-badge">Вопрос 1</div>
+      <div class="q-text" id="q-text"></div>
+    </div>
+
+    <div class="options-grid" id="options"></div>
+
+    <div class="quiz-actions">
+      <button class="btn-skip" onclick="skipQuestion()">↷ Пропустить</button>
+      <button class="btn-next" id="btn-next" onclick="nextQuestion()">СЛЕДУЮЩИЙ →</button>
+    </div>
+  </div>
+</div>
+
+<!-- RESULT SCREEN -->
+<div id="result-screen" class="screen">
+  <div class="result-container">
+    <div class="result-ring">
+      <svg width="160" height="160" viewBox="0 0 160 160">
+        <defs>
+          <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+          </linearGradient>
+        </defs>
+        <circle class="ring-bg" cx="80" cy="80" r="70"/>
+        <circle class="ring-progress" id="ring" cx="80" cy="80" r="70"/>
+      </svg>
+      <div class="result-percent" id="result-pct">0<small>%</small></div>
+    </div>
+
+    <h2 class="result-title" id="result-title">—</h2>
+    <p class="result-subtitle" id="result-sub"></p>
+
+    <div class="stats-grid">
+      <div class="stat-box correct">
+        <div class="stat-number" id="stat-correct">0</div>
+        <div class="stat-label">✓ Верно</div>
+      </div>
+      <div class="stat-box wrong">
+        <div class="stat-number" id="stat-wrong">0</div>
+        <div class="stat-label">✗ Ошибки</div>
+      </div>
+      <div class="stat-box skip">
+        <div class="stat-number" id="stat-skip">0</div>
+        <div class="stat-label">— Пропущено</div>
+      </div>
+    </div>
+
+    <div class="mistakes-section" id="mistakes-section" style="display: none;">
+      <div class="mistakes-title">❌ Ошибки — повтори эти вопросы</div>
+      <div id="mistakes-list"></div>
+    </div>
+
+    <div class="result-buttons">
+      <button class="btn-again" onclick="goHome()">🔄 Новый тест</button>
+      <button class="btn-mistakes" id="btn-retry-mistakes" onclick="retryMistakes()">⚡ Работать над ошибками</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// DATA - UX/UI (100 questions)
+const UX_DATA = [
+  {q:"Что означает UX в дизайне интерфейсов?",a:"Пользовательский опыт",w:["Интерфейс экрана","Программный код","Графический стиль"]},
+  {q:"Что означает UI?",a:"Пользовательский интерфейс",w:["Язык программирования","Цветовая палитра","Анимация экрана"]},
+  {q:"Что такое wireframe?",a:"Каркас интерфейса",w:["Финальный дизайн","Цветовая схема","Логотип проекта"]},
+  {q:"Какой инструмент используется для создания прототипов интерфейсов?",a:"Figma",w:["Blender","Photoshop","Excel"]},
+  {q:"Что является основной задачей UX-дизайна?",a:"Удобство использования продукта",w:["Красивые цвета","Быстрая разработка","Создание логотипа"]},
+  {q:"Что такое адаптивный дизайн?",a:"Дизайн для разных устройств",w:["Анимированный дизайн","Печатный дизайн","3D-дизайн"]},
+  {q:"Что такое интерактивный прототип?",a:"Кликабельный макет",w:["Готовый продукт","Статичное изображение","Рекламный баннер"]},
+  {q:"Что такое user flow?",a:"Путь пользователя",w:["Скорость загрузки","Цветовая схема","Код приложения"]},
+  {q:"Что такое onboarding?",a:"Знакомство пользователя с продуктом",w:["Финальный экран","Рекламная рассылка","Техническая поддержка"]},
+  {q:"Что такое responsive design?",a:"Адаптация под разные экраны",w:["Быстрый рендеринг","Интерактивные кнопки","Тёмная тема"]},
+  {q:"Что такое Accessibility?",a:"Доступность интерфейса",w:["Скорость работы","Цветовое оформление","Размер иконок"]},
+  {q:"Какой принцип важен для Accessibility?",a:"Контрастность",w:["Симметрия","Анимация","Градиент"]},
+  {q:"Что такое UI-kit?",a:"Набор элементов интерфейса",w:["Редактор кода","Коллекция шрифтов","Список задач"]},
+  {q:"Что такое дизайн-система?",a:"Совокупность правил дизайна",w:["Один шаблон сайта","Коллекция иконок","Программа для рисования"]},
+  {q:"Для чего используются сетки в интерфейсе?",a:"Для выравнивания элементов",w:["Для анимации","Для хранения данных","Для создания 3D"]},
+  {q:"Что такое композиция в дизайне?",a:"Правильное расположение элементов",w:["Набор цветов","Выбор шрифта","Тип анимации"]},
+  {q:"Что такое типографика?",a:"Оформление текста",w:["Создание графики","Рисование иконок","Выбор цветов"]},
+  {q:"Что такое юзабилити-тестирование?",a:"Проверка удобства интерфейса",w:["Проверка кода","Тест скорости","Цветокоррекция"]},
+  {q:"Что такое UX-исследование?",a:"Изучение потребностей пользователей",w:["Разработка кода","Рисование макета","Написание текста"]},
+  {q:"Что такое dark mode?",a:"Тёмная тема",w:["Анимация загрузки","Режим разработчика","Режим офлайн"]},
+  {q:"Какой инструмент используют для создания векторной графики?",a:"Adobe Illustrator",w:["Adobe Photoshop","Blender","Figma"]},
+  {q:"Какой формат относится к векторной графике?",a:"SVG",w:["JPEG","PNG","GIF"]},
+  {q:"Что такое растровая графика?",a:"Графика из пикселей",w:["Графика из кривых","Трёхмерная графика","Текстовая графика"]},
+  {q:"Какой графический редактор для растровой графики?",a:"Adobe Photoshop",w:["Adobe Illustrator","Blender","Figma"]},
+  {q:"Что такое слой в Photoshop?",a:"Отдельный уровень изображения",w:["Тип кисти","Фильтр цвета","Маска объекта"]},
+  {q:"Для чего используется маска слоя?",a:"Для скрытия частей слоя",w:["Для копирования слоя","Для изменения цвета","Для анимации"]},
+  {q:"Что такое Smart Object?",a:"Умный объект для редактирования",w:["Быстрый фильтр","Скрытый слой","Векторный путь"]},
+  {q:"Что такое ретушь?",a:"Улучшение изображения",w:["Изменение размера","Добавление текста","Создание коллажа"]},
+  {q:"Какой инструмент используют для ретуши кожи?",a:"Healing Brush",w:["Dodge Tool","Eraser","Magic Wand"]},
+  {q:"Что такое фотомонтаж?",a:"Объединение нескольких изображений",w:["Цветокоррекция фото","Векторизация фото","Размытие фото"]},
+  {q:"Что такое коллаж?",a:"Композиция из изображений",w:["Одиночное фото","Векторный рисунок","3D-сцена"]},
+  {q:"Что такое цветокоррекция?",a:"Настройка цветов изображения",w:["Изменение размера","Добавление фильтра","Удаление фона"]},
+  {q:"Какой цветовой режим для печати?",a:"CMYK",w:["RGB","LAB","HSB"]},
+  {q:"Какой цветовой режим для экранов?",a:"RGB",w:["CMYK","LAB","PANTONE"]},
+  {q:"Что такое LAB?",a:"Цветовое пространство",w:["Тип файла","Формат сжатия","Тип шрифта"]},
+  {q:"Что такое mockup?",a:"Реалистичная демонстрация дизайна",w:["Исходный код","Архив файлов","Анимация перехода"]},
+  {q:"Для чего используется mockup?",a:"Для презентации дизайна",w:["Для хранения файлов","Для тестирования кода","Для печати"]},
+  {q:"Что такое логотип?",a:"Символ бренда",w:["Набор шрифтов","Цветовая схема","Иллюстрация"]},
+  {q:"Что такое фирменный стиль?",a:"Визуальный образ компании",w:["Рекламный ролик","Бизнес-план","Техническая документация"]},
+  {q:"Что такое UI-иконка?",a:"Значок интерфейса",w:["Фотография","Анимация","Баннер"]},
+  {q:"Что такое пиктограмма?",a:"Графический символ",w:["Тип шрифта","Цветовой код","Тип файла"]},
+  {q:"Что такое инфографика?",a:"Визуальное представление данных",w:["Рекламный текст","Звуковой файл","3D-модель"]},
+  {q:"Что такое рекламный баннер?",a:"Графическая реклама",w:["Техническое задание","Логотип","Презентация"]},
+  {q:"Что такое постер?",a:"Плакат",w:["Кнопка интерфейса","Слой в Photoshop","3D-объект"]},
+  {q:"Что такое AI-фильтры?",a:"Фильтры на основе ИИ",w:["Ручные фильтры","Векторные маски","Цветовые профили"]},
+  {q:"Какой AI-инструмент генерирует изображения?",a:"Midjourney",w:["Remove.bg","Figma","Blender"]},
+  {q:"Для чего используется Remove.bg?",a:"Удаление фона",w:["Создание логотипа","Генерация текста","Рендеринг 3D"]},
+  {q:"Какой AI-сервис увеличивает качество изображений?",a:"Topaz Gigapixel AI",w:["Canva AI","Midjourney","Remove.bg"]},
+  {q:"Что делает Canva AI?",a:"Создаёт и редактирует дизайн",w:["Генерирует 3D-модели","Анализирует код","Удаляет фон"]},
+  {q:"Что такое prompt в AI?",a:"Команда для нейросети",w:["Тип файла","Цветовой режим","Метод рендеринга"]},
+  {q:"Что такое генерация изображений AI?",a:"Создание изображений ИИ",w:["Редактирование текста","Создание 3D-анимации","Написание кода"]},
+  {q:"Что такое векторизация?",a:"Перевод изображения в вектор",w:["Сжатие файла","Удаление фона","Изменение цвета"]},
+  {q:"Что означает VR?",a:"Виртуальная реальность",w:["Видеозапись","Векторный рендер","Визуальный ресурс"]},
+  {q:"Что означает AR?",a:"Дополненная реальность",w:["Автоматический рендер","Архив ресурсов","Адаптивный рисунок"]},
+  {q:"Что означает MR?",a:"Смешанная реальность",w:["Множественный рендер","Мобильный ресурс","Медиаредактор"]},
+  {q:"Что такое цифровая реальность?",a:"Искусственная цифровая среда",w:["Набор 3D-моделей","Формат файла","Тип браузера"]},
+  {q:"Что такое 3D-графика?",a:"Трёхмерная графика",w:["Двухмерная графика","Векторная графика","Растровая графика"]},
+  {q:"Какая программа для 3D-моделирования?",a:"Blender",w:["Figma","Photoshop","Illustrator"]},
+  {q:"Что такое примитив в 3D?",a:"Простая базовая фигура",w:["Сложная сцена","UV-развёртка","Материал объекта"]},
+  {q:"Что такое полигон?",a:"Элемент поверхности модели",w:["Тип света","Цветовой канал","Тип анимации"]},
+  {q:"Что такое вершина в 3D-модели?",a:"Точка модели",w:["Поверхность модели","Линия модели","Материал модели"]},
+  {q:"Что такое грань в 3D?",a:"Поверхность между вершинами",w:["Точка модели","Тип освещения","Слой сцены"]},
+  {q:"Что такое Extrude?",a:"Выдавливание геометрии",w:["Скругление граней","Разрезание модели","Создание материала"]},
+  {q:"Что делает инструмент Bevel?",a:"Скругляет края",w:["Выдавливает грани","Создаёт текстуру","Настраивает свет"]},
+  {q:"Что делает инструмент Inset?",a:"Создаёт внутренний контур",w:["Удаляет полигоны","Добавляет вершины","Запекает текстуры"]},
+  {q:"Что такое модификатор в Blender?",a:"Инструмент изменения объекта",w:["Тип рендера","Источник света","Тип камеры"]},
+  {q:"Что такое деформатор?",a:"Средство деформации объекта",w:["Тип материала","Тип анимации","Источник света"]},
+  {q:"Что такое UV-развертка?",a:"Разворачивание модели на плоскость",w:["Тип рендеринга","Вид из камеры","Тип освещения"]},
+  {q:"Что такое текстурирование?",a:"Наложение текстур",w:["Настройка света","Анимация объекта","Риггинг модели"]},
+  {q:"Что такое материал в 3D-графике?",a:"Свойства поверхности объекта",w:["Тип освещения","Форма объекта","Тип анимации"]},
+  {q:"Что такое PBR-материалы?",a:"Физически корректные материалы",w:["Анимированные материалы","Плоские текстуры","Векторные карты"]},
+  {q:"Что такое roughness?",a:"Шероховатость поверхности",w:["Металличность","Прозрачность","Яркость"]},
+  {q:"Что такое metallic map?",a:"Карта металличности",w:["Карта шероховатости","Карта нормалей","Карта отражений"]},
+  {q:"Что такое normal map?",a:"Карта неровностей",w:["Карта цвета","Карта металличности","Карта прозрачности"]},
+  {q:"Что такое освещение сцены?",a:"Настройка света",w:["Настройка материала","Настройка камеры","Настройка анимации"]},
+  {q:"Что такое источник света в 3D?",a:"Объект, излучающий свет",w:["Объект с текстурой","Объект для рендера","Объект-камера"]},
+  {q:"Что такое HDRI?",a:"Панорамное освещение",w:["Тип рендера","Тип текстуры","Тип материала"]},
+  {q:"Что такое рендеринг?",a:"Создание итогового изображения",w:["Создание модели","Анимация объекта","Настройка света"]},
+  {q:"Что такое render engine?",a:"Движок рендеринга",w:["Движок анимации","Движок физики","Движок звука"]},
+  {q:"Какой рендер-движок используется в Blender?",a:"Cycles и Eevee",w:["Arnold и Vray","Corona и Mental Ray","Octane и Redshift"]},
+  {q:"Что такое Eevee?",a:"Рендер в реальном времени",w:["Офлайн-рендер","Облачный рендер","Векторный рендер"]},
+  {q:"Что такое viewport?",a:"Окно просмотра сцены",w:["Тип камеры","Тип освещения","Тип рендера"]},
+  {q:"Что такое анимация объекта?",a:"Изменение объекта во времени",w:["Создание текстур","Настройка света","Риггинг модели"]},
+  {q:"Что такое keyframe?",a:"Ключевой кадр",w:["Тип анимации","Слой сцены","Тип рендера"]},
+  {q:"Что такое анимация камеры?",a:"Движение камеры",w:["Движение модели","Движение света","Движение текстуры"]},
+  {q:"Что такое FPS?",a:"Кадры в секунду",w:["Размер файла","Тип рендера","Количество полигонов"]},
+  {q:"Что такое depth of field?",a:"Глубина резкости",w:["Размытие движения","Тип освещения","Цветовой профиль"]},
+  {q:"Что такое motion blur?",a:"Размытие движения",w:["Глубина резкости","Тип анимации","Эффект свечения"]},
+  {q:"Что такое toon shading?",a:"Мультяшное затенение",w:["Реалистичное затенение","Металлическое затенение","Стеклянное затенение"]},
+  {q:"Что такое baking текстур?",a:"Запекание текстур",w:["Наложение текстур","Удаление текстур","Анимация текстур"]},
+  {q:"Что такое spline?",a:"Кривая линия",w:["Плоская фигура","Источник света","Тип материала"]},
+  {q:"Что такое low poly?",a:"Низкополигональная модель",w:["Высокополигональная модель","Сглаженная модель","Анимированная модель"]},
+  {q:"Что такое high poly?",a:"Высокополигональная модель",w:["Низкополигональная модель","Плоская модель","Прозрачная модель"]},
+  {q:"Что такое риггинг?",a:"Создание скелета модели",w:["Наложение текстур","Настройка света","Создание анимации"]},
+  {q:"Что такое сцена в Blender?",a:"Рабочее пространство проекта",w:["Тип файла","Источник света","Тип камеры"]},
+  {q:"Что такое камера в 3D?",a:"Объект для съёмки сцены",w:["Источник света","Тип материала","Тип анимации"]},
+  {q:"Что такое рендер изображения?",a:"Готовое изображение после обработки",w:["Исходная модель","Скелет модели","UV-развёртка"]},
+  {q:"Что такое виртуальная локация?",a:"Цифровое пространство",w:["Тип рендера","Тип анимации","Реальное место"]},
+  {q:"Что такое интерактивный VR-элемент?",a:"Объект для взаимодействия в VR",w:["Статичный объект","Источник света","Тип камеры"]},
+  {q:"Что изучает модуль UX/UI и цифровых реальностей?",a:"UX/UI-дизайн, графику, 3D-моделирование и цифровые технологии",w:["Только программирование","Только 3D-графику","Только веб-дизайн"]}
+];
+
+// DATA - PM-02 (100 questions)
+const PM02_DATA = [
+  {q:"Какой тег задаёт заголовок первого уровня?",a:"&lt;h1&gt;",w:["&lt;head&gt;","&lt;header&gt;","&lt;title&gt;"]},
+  {q:"С какого символа начинается имя переменной в PHP?",a:"$",w:["@","#","&"]},
+  {q:"Какое ключевое слово объявляет изменяемую переменную с блочной областью видимости?",a:"let",w:["var","static","const"]},
+  {q:"Какой тег задаёт абзац текста?",a:"&lt;p&gt;",w:["&lt;par&gt;","&lt;text&gt;","&lt;span&gt;"]},
+  {q:"Как открывается блок PHP-кода?",a:"&lt;?php",w:["&lt;php&gt;","{php}","&lt;%php"]},
+  {q:"Какое ключевое слово объявляет константу в JavaScript?",a:"const",w:["let","var","final"]},
+  {q:"За что в первую очередь отвечает CSS?",a:"За внешний вид и оформление",w:["За структуру документа","За серверную логику","За хранение данных"]},
+  {q:"Какие операторы выводят текст в PHP?",a:"echo / print",w:["write","alert","console.log"]},
+  {q:"Как вывести сообщение в консоль браузера?",a:"console.log()",w:["print()","echo","alert.log()"]},
+  {q:"Какой тег создаёт гиперссылку?",a:"&lt;a&gt;",w:["&lt;link&gt;","&lt;href&gt;","&lt;url&gt;"]},
+  {q:"Какой тип данных хранит целые числа?",a:"integer",w:["string","float","bool"]},
+  {q:"Как подключить внешний JS-файл к HTML-странице?",a:"&lt;script src=\"...\"&gt;",w:["&lt;js&gt;","&lt;link js&gt;","&lt;javascript&gt;"]},
+  {q:"Какой атрибут тега &lt;a&gt; указывает адрес ссылки?",a:"href",w:["src","link","target"]},
+  {q:"Какой тип данных хранит значения true/false?",a:"boolean",w:["string","integer","array"]},
+  {q:"Какое значение в JS обозначает намеренное отсутствие значения?",a:"null",w:["undefined","NaN","void"]},
+  {q:"Какой тег вставляет изображение на страницу?",a:"&lt;img&gt;",w:["&lt;image&gt;","&lt;picture&gt;","&lt;figure&gt;"]},
+  {q:"Какой оператор означает «строго равно»?",a:"===",w:["=","==","!="]},
+  {q:"Что вернёт typeof \"hello\" в JavaScript?",a:"\"string\"",w:["\"text\"","\"char\"","\"object\""]},
+  {q:"Какой атрибут тега &lt;img&gt; задаёт альтернативный текст?",a:"alt",w:["title","src","caption"]},
+  {q:"Что делает оператор «=» в PHP?",a:"Присваивает значение",w:["Сравнивает значения","Складывает числа","Сравнивает типы"]},
+  {q:"Какой оператор означает «строго равно» в JS?",a:"===",w:["=","==","=>"]},
+  {q:"Что обозначает тег &lt;ul&gt;?",a:"Маркированный список",w:["Нумерованный список","Элемент списка","Ссылку"]},
+  {q:"Какая конструкция выбирает один из нескольких вариантов по значению?",a:"switch",w:["if","while","for"]},
+  {q:"Как объявить массив в JavaScript?",a:"[]",w:["{}","()","array()"]},
+  {q:"Какой тег обозначает отдельный элемент списка?",a:"&lt;li&gt;",w:["&lt;ul&gt;","&lt;ol&gt;","&lt;item&gt;"]},
+  {q:"Какой CSS-селектор обращается к элементу по классу?",a:".name",w:["#name","name","*name"]},
+  {q:"Какой цикл удобнее всего, когда число повторений известно заранее?",a:"for",w:["while","do-while","foreach"]},
+  {q:"Как обратиться к первому элементу массива arr?",a:"arr[0]",w:["arr[1]","arr.first","arr(0)"]},
+  {q:"Какой CSS-селектор обращается к элементу по идентификатору id?",a:"#name",w:[".name","name","@name"]},
+  {q:"Какой цикл специально предназначен для перебора массивов?",a:"foreach",w:["for","while","switch"]},
+  {q:"Какое свойство возвращает количество элементов массива?",a:"length",w:["count","size","total"]},
+  {q:"Какое свойство CSS задаёт цвет текста?",a:"color",w:["background-color","text-color","font-color"]},
+  {q:"Как можно объявить массив в PHP?",a:"array() или []",w:["{}","()","list{}"]},
+  {q:"Какой метод добавляет элемент в конец массива?",a:"push()",w:["pop()","shift()","append()"]},
+  {q:"Какое свойство CSS задаёт цвет фона?",a:"background-color",w:["color","bg","fill"]},
+  {q:"Как обратиться к первому элементу индексного массива $a?",a:"$a[0]",w:["$a[1]","$a(0)","$a->0"]},
+  {q:"Как объявить объект в JavaScript?",a:"{}",w:["[]","()","new[]"]},
+  {q:"Какое свойство задаёт внутренний отступ?",a:"padding",w:["margin","border","gap"]},
+  {q:"Какая функция возвращает количество элементов массива в PHP?",a:"count()",w:["length()","size()","len()"]},
+  {q:"Как обратиться к свойству name объекта obj?",a:"obj.name",w:["obj->name","obj::name","obj#name"]},
+  {q:"Какое свойство задаёт внешний отступ?",a:"margin",w:["padding","spacing","inset"]},
+  {q:"Как правильно объявляется функция в PHP?",a:"function name() {}",w:["funcname() {}","def name():","fnname() {}"]},
+  {q:"Что такое DOM?",a:"Объектная модель документа",w:["База данных","Язык запросов","Файл стилей"]},
+  {q:"Что входит в блочную модель (Box Model)?",a:"Content, padding, border, margin",w:["Только содержимое","Flex и grid","Width, height, color"]},
+  {q:"Какое ключевое слово возвращает значение из функции?",a:"return",w:["echo","print","exit"]},
+  {q:"Какой метод находит элемент по его id?",a:"getElementById()",w:["getElementByClass()","querySelectorAll()","getById()"]},
+  {q:"Какое значение свойства display включает Flexbox?",a:"display: flex",w:["display: block","display: grid","display: inline"]},
+  {q:"Какая функция возвращает длину строки в PHP?",a:"strlen()",w:["count()","length()","len()"]},
+  {q:"Какой метод находит первый элемент по CSS-селектору?",a:"querySelector()",w:["getElementsByTag()","getById()","querySelectorFirst()"]},
+  {q:"Какое свойство Flexbox выравнивает элементы по главной оси?",a:"justify-content",w:["align-items","flex-direction","order"]},
+  {q:"Какое свойство задаёт направление флекс-контейнера?",a:"flex-direction",w:["flex-wrap","justify-content","align-self"]},
+  {q:"Какая функция переводит строку в верхний регистр в PHP?",a:"strtoupper()",w:["strtolower()","ucwords()","upper()"]},
+  {q:"Какое свойство меняет HTML-содержимое элемента?",a:"innerHTML",w:["value","text","content"]},
+  {q:"Какое значение свойства display включает Grid?",a:"display: grid",w:["display: flex","display: table","display: block"]},
+  {q:"Каким методом форма передаёт данные скрыто?",a:"POST",w:["GET","PUT","HEAD"]},
+  {q:"Какой метод создаёт новый элемент в DOM?",a:"createElement()",w:["newElement()","addElement()","buildElement()"]},
+  {q:"Какое свойство задаёт колонки в CSS Grid?",a:"grid-template-columns",w:["grid-rows","columns","grid-gap"]},
+  {q:"Как получить данные формы методом POST?",a:"$_POST",w:["$_GET","$_FORM","$_DATA"]},
+  {q:"Какой метод добавляет дочерний элемент в конец родителя?",a:"appendChild()",w:["addChild()","insertItem()","pushNode()"]},
+  {q:"Для чего используются медиа-запросы?",a:"Адаптация стилей под размер экрана",w:["Загрузка изображений","Подключение шрифтов","Кэширование стилей"]},
+  {q:"Как расшифровывается SQL?",a:"Язык структурированных запросов",w:["Системный сценарий","Серверный код","Стиль страницы"]},
+  {q:"Какой метод назначает обработчик события элементу?",a:"addEventListener()",w:["addEvent()","onEvent()","bindEvent()"]},
+  {q:"С чего начинается медиа-запрос в CSS?",a:"@media",w:["@import","@screen","@query"]},
+  {q:"Какая SQL-команда выбирает данные?",a:"SELECT",w:["INSERT","UPDATE","DELETE"]},
+  {q:"Какое имя у события щелчка мышью?",a:'"click"',w:['"hover"','"press"','"mouseclick"']},
+  {q:"Какой тег обозначает «шапку» сайта?",a:"&lt;header&gt;",w:["&lt;footer&gt;","&lt;main&gt;","&lt;aside&gt;"]},
+  {q:"Какая SQL-команда добавляет новые данные?",a:"INSERT",w:["SELECT","DROP","ALTER"]},
+  {q:"С какого ключевого слова начинается функция в JS?",a:"function",w:["func","def","fn"]},
+  {q:"Какой тег предназначен для блока навигации?",a:"&lt;nav&gt;",w:["&lt;menu&gt;","&lt;navigation&gt;","&lt;navbar&gt;"]},
+  {q:"Какая SQL-команда изменяет существующие данные?",a:"UPDATE",w:["SELECT","INSERT","REMOVE"]},
+  {q:"Что делает return в функции?",a:"Возвращает значение из функции",w:["Выводит текст на экран","Удаляет переменную","Создаёт переменную"]},
+  {q:"Какой тег обозначает «подвал» сайта?",a:"&lt;footer&gt;",w:["&lt;bottom&gt;","&lt;end&gt;","&lt;foot&gt;"]},
+  {q:"Какая SQL-команда удаляет данные из таблицы?",a:"DELETE",w:["DROP","CLEAR","REMOVE"]},
+  {q:"Какой цикл выполняется заранее известное число раз?",a:"for",w:["while","do-while","switch"]},
+  {q:"Какие расширения PHP работают с MySQL?",a:"mysqli и PDO",w:["mysql_old","sqlsrv","pgsql"]},
+  {q:"Какое свойство задаёт размер шрифта?",a:"font-size",w:["text-size","size","font-weight"]},
+  {q:"Как расшифровывается CRUD?",a:"Create, Read, Update, Delete",w:["Copy, Read, Use, Delete","Create, Run, Update, Deploy","Code, Read, Use, Debug"]},
+  {q:"Как записать однострочный комментарий в JS?",a:"//",w:["#","--","/* */"]},
+  {q:"Какое свойство задаёт жирность шрифта?",a:"font-weight",w:["font-style","bold","text-bold"]},
+  {q:"Какой оператор склеивает строки в PHP?",a:".",w:["+","&",","]},
+  {q:"Что выведет 2 + \"2\" в JavaScript?",a:'"22"',w:["4","Ошибку","NaN"]},
+  {q:"Какой псевдокласс срабатывает при наведении курсора?",a:":hover",w:[":active",":focus",":visited"]},
+  {q:"Какой результат у выражения 5 % 2 в PHP?",a:"1",w:["2","0","2.5"]},
+  {q:"Какая функция преобразует строку в целое число в JS?",a:"parseInt()",w:["toNumber()","Number.int()","parseInteger()"]},
+  {q:"Какое свойство создаёт плавный переход состояния?",a:"transition",w:["animation","transform","ease"]},
+  {q:"Каким символом завершается инструкция в PHP?",a:";",w:[",",".",":" ]},
+  {q:"Какое хранилище сохраняет данные браузера без срока истечения?",a:"localStorage",w:["sessionStorage","tempStorage","cache"]},
+  {q:"Какое правило описывает ключевые кадры анимации?",a:"@keyframes",w:["@animation","@move","@frames"]},
+  {q:"Какая функция выводит структуру массива для отладки в PHP?",a:"print_r()",w:["echo()","show()","dump()"]},
+  {q:"Какой метод записывает данные в localStorage?",a:"setItem()",w:["save()","put()","store()"]},
+  {q:"Что означает «адаптивный веб-дизайн»?",a:"Подстройка под разные устройства и экраны",w:["Дизайн только для ПК","Только мобильная версия","Использование PHP"]},
+  {q:"Что вернёт isset($x), если $x не объявлена?",a:"false",w:["true","Ошибку","null"]},
+  {q:"Какой формат используется для обмена данными в вебе?",a:"JSON",w:["DOC","EXE","XLS"]},
+  {q:"Какой тег является блочным контейнером общего назначения?",a:"&lt;div&gt;",w:["&lt;span&gt;","&lt;block&gt;","&lt;box&gt;"]},
+  {q:"Какой тип данных представляет дробное число?",a:"float (double)",w:["integer","string","bool"]},
+  {q:"Какой метод превращает объект JS в JSON-строку?",a:"JSON.stringify()",w:["JSON.parse()","toJSON()","JSON.encode()"]},
+  {q:"Какой тег является строчным контейнером?",a:"&lt;span&gt;",w:["&lt;div&gt;","&lt;p&gt;","&lt;inline&gt;"]},
+  {q:"Какой массив использует строковые ключи?",a:"Ассоциативный",w:["Индексный","Числовой","Объектный"]},
+  {q:"Какая конструкция выбирает блок кода по значению?",a:"switch",w:["if","for","while"]},
+  {q:"Какое значение является «ложным» в JS?",a:"0",w:['"0"','"false"',"[]"]}
+];
+
+// DATA - C# (100 questions)
+const CSHARP_DATA = [
+  {q:"Как объявляется целочисленная переменная в C#?",a:"int a;",w:["integer a;","num a;","var int a;"]},
+  {q:"Какой оператор используется для ввода данных?",a:"Console.ReadLine()",w:["Console.WriteLine()","Input()","Read()"]},
+  {q:"Какой тип данных используется для хранения дробных чисел?",a:"double",w:["int","bool","char"]},
+  {q:"Какой оператор отвечает за проверку условия?",a:"if",w:["for","while","switch"]},
+  {q:"Что делает оператор else?",a:"Выполняет альтернативный блок кода",w:["Завершает программу","Создает цикл","Объявляет переменную"]},
+  {q:"Для чего используется switch?",a:"Для множественного выбора",w:["Для создания массива","Для объявления функции","Для сортировки"]},
+  {q:"Какой цикл выполняется, пока условие истинно?",a:"while",w:["switch","if","return"]},
+  {q:"Какой цикл чаще используется при работе с массивами?",a:"for",w:["switch","if","break"]},
+  {q:"Что такое строка в C#?",a:"Последовательность символов",w:["Целое число","Массив логических значений","Тип цикла"]},
+  {q:"Как объявляется массив?",a:"int[] arr;",w:["array arr;","int arr;","arr[] int;"]},
+  {q:"С какого индекса начинается массив?",a:"0",w:["1","-1","2"]},
+  {q:"Как получить длину массива?",a:"Length",w:["Size","Count()","Len()"]},
+  {q:"Как называется функция, созданная пользователем?",a:"Пользовательская функция",w:["Главная функция","Циклическая функция","Строковая функция"]},
+  {q:"Какой оператор используется для присваивания?",a:"=",w:["==","!=","<="]},
+  {q:"Что делает Console.WriteLine()?",a:"Выводит данные в консоль",w:["Считывает данные","Завершает программу","Создает массив"]},
+  {q:"Какой тип данных хранит логическое значение?",a:"bool",w:["int","double","char"]},
+  {q:"Что делает цикл for?",a:"Повторяет код заданное количество раз",w:["Выполняет выбор варианта","Создает строку","Завершает программу"]},
+  {q:"Что делает оператор break?",a:"Прерывает выполнение цикла",w:["Создает цикл","Объявляет переменную","Выполняет ввод"]},
+  {q:"Как называется двумерный массив?",a:"Многомерный массив",w:["Циклический массив","Строковый массив","Булев массив"]},
+  {q:"Для чего используется return?",a:"Для возврата значения из функции",w:["Для вывода текста","Для создания массива","Для объявления переменной"]},
+  {q:"Какой оператор сравнения проверяет равенство?",a:"==",w:["=","!=","<="]},
+  {q:"Какой цикл выполнится минимум один раз?",a:"do-while",w:["for","switch","if"]},
+  {q:"Что делает Array.Sort()?",a:"Сортирует массив",w:["Создает массив","Удаляет массив","Выводит массив"]},
+  {q:"Что делает Array.Reverse()?",a:"Разворачивает массив",w:["Удаляет массив","Сортирует массив","Создает массив"]},
+  {q:"Как называется элемент интерфейса для ввода текста в Windows Forms?",a:"TextBox",w:["Button","Label","CheckBox"]},
+  {q:"Какой элемент используется для отображения текста?",a:"Label",w:["TextBox","Button","Panel"]},
+  {q:"Какое событие возникает при нажатии кнопки?",a:"Click",w:["Load","Change","Input"]},
+  {q:"Для чего используется foreach?",a:"Для перебора коллекций",w:["Для ветвления","Для сортировки","Для ввода"]},
+  {q:"Что такое обработчик событий?",a:"Метод, выполняемый при событии",w:["Тип данных","Массив","Цикл"]},
+  {q:"Для чего используется ListBox?",a:"Для отображения списка элементов",w:["Для ввода пароля","Для рисования","Для подключения БД"]},
+  {q:"Что делает OpenFileDialog?",a:"Позволяет выбрать файл",w:["Удаляет файл","Создает БД","Сортирует данные"]},
+  {q:"Что такое CRUD?",a:"Операции создания, чтения, изменения и удаления данных",w:["Метод сортировки","Тип массива","Вид цикла"]},
+  {q:"Что используется для подключения к SQL Server в C#?",a:"ADO.NET",w:["HTML","CSS","JSON"]},
+  {q:"Что делает DataGridView?",a:"Отображает табличные данные",w:["Выводит сообщения","Создает циклы","Выполняет сортировку"]},
+  {q:"Какой элемент используется для выбора одного варианта?",a:"RadioButton",w:["CheckBox","Label","TextBox"]},
+  {q:"Для чего используется CheckBox?",a:"Для выбора нескольких вариантов",w:["Для ввода текста","Для вывода таблицы","Для запуска формы"]},
+  {q:"Что такое сериализация?",a:"Преобразование объекта в формат хранения",w:["Создание массива","Сортировка массива","Выполнение цикла"]},
+  {q:"Какой метод используется для записи в файл?",a:"WriteAllText()",w:["ReadLine()","Sort()","Open()"]},
+  {q:"Какой метод используется для чтения файла?",a:"ReadAllText()",w:["WriteLine()","Append()","Close()"]},
+  {q:"Что такое SQL?",a:"Язык работы с базами данных",w:["Язык разметки","Графический редактор","Тип массива"]},
+  {q:"Что такое React Native?",a:"Фреймворк для мобильных приложений",w:["База данных","Язык разметки","Операционная система"]},
+  {q:"Для чего используется useState?",a:"Для управления состоянием компонента",w:["Для сортировки массива","Для подключения БД","Для вывода текста"]},
+  {q:"Что такое API?",a:"Интерфейс взаимодействия программ",w:["Тип массива","Цикл","Оператор выбора"]},
+  {q:"Что делает FlatList?",a:"Отображает список данных",w:["Создает окно","Удаляет данные","Сортирует массив"]},
+  {q:"Для чего используется AsyncStorage?",a:"Для локального хранения данных",w:["Для вывода текста","Для сортировки","Для создания цикла"]},
+  {q:"Что такое props?",a:"Свойства компонента",w:["Тип массива","База данных","Форма"]},
+  {q:"Для чего используется навигация в мобильном приложении?",a:"Для перехода между экранами",w:["Для сортировки","Для создания массива","Для чтения файлов"]},
+  {q:"Что делает fetch?",a:"Выполняет запрос к API",w:["Создает цикл","Удаляет данные","Запускает БД"]},
+  {q:"Что такое анимация в React Native?",a:"Визуальное изменение интерфейса",w:["SQL-запрос","Тип данных","База данных"]},
+  {q:"Для чего используется эмулятор?",a:"Для тестирования мобильного приложения",w:["Для сортировки массива","Для создания SQL","Для чтения файлов"]},
+  {q:"Что такое компонент?",a:"Повторно используемая часть интерфейса",w:["Тип цикла","База данных","Оператор условия"]},
+  {q:"Для чего используется useReducer?",a:"Для управления сложным состоянием",w:["Для вывода текста","Для подключения файлов","Для создания SQL"]},
+  {q:"Что такое Push-уведомление?",a:"Сообщение пользователю от приложения",w:["Тип массива","SQL-запрос","Метод сортировки"]},
+  {q:"Что такое геолокация?",a:"Определение местоположения устройства",w:["Сортировка массива","Работа с SQL","Работа с файлами"]},
+  {q:"Для чего используется камера в мобильном приложении?",a:"Для получения фото и видео",w:["Для сортировки","Для подключения SQL","Для запуска цикла"]},
+  {q:"Что такое оптимизация производительности?",a:"Улучшение скорости работы приложения",w:["Создание массива","Ввод текста","Работа с Label"]},
+  {q:"Для чего проводится тестирование приложения?",a:"Для поиска ошибок",w:["Для сортировки","Для создания SQL","Для вывода текста"]},
+  {q:"Что такое публикация приложения?",a:"Размещение приложения в магазине приложений",w:["Создание массива","Работа с SQL","Выполнение цикла"]},
+  {q:"Какой компонент используется для пользовательского ввода?",a:"TextInput",w:["Label","DataGridView","ButtonBox"]},
+  {q:"Что такое состояние компонента?",a:"Данные, влияющие на отображение компонента",w:["SQL-запрос","Цикл","Тип массива"]},
+  {q:"Какой оператор используется для логического И?",a:"&&",w:["||","==","!="]},
+  {q:"Какой оператор используется для логического ИЛИ?",a:"||",w:["&&","==","%"]},
+  {q:"Как обозначается комментарий в C#?",a:"//",w:["##","<!-- -->","**"]},
+  {q:"Как называется главный метод программы?",a:"Main()",w:["Start()","Program()","Run()"]},
+  {q:"Какой оператор используется для остатка от деления?",a:"%",w:["/","*","+"]},
+  {q:"Что делает continue?",a:"Переходит к следующей итерации цикла",w:["Завершает программу","Создает массив","Выполняет сортировку"]},
+  {q:"Что делает ToUpper()?",a:"Переводит строку в верхний регистр",w:["Удаляет строку","Сортирует строку","Делит строку"]},
+  {q:"Что делает ToLower()?",a:"Переводит строку в нижний регистр",w:["Создает массив","Сортирует массив","Удаляет строку"]},
+  {q:"Какой символ используется для конкатенации строк?",a:"+",w:["*","/","%"]},
+  {q:"Как называется ошибка, возникающая во время выполнения программы?",a:"Runtime error",w:["Syntax error","Style error","Logical file"]},
+  {q:"Что такое IDE?",a:"Среда разработки",w:["Тип массива","База данных","SQL-запрос"]},
+  {q:"Что такое Visual Studio?",a:"Среда разработки Microsoft",w:["База данных","Операционная система","Компилятор Java"]},
+  {q:"Какой тип данных хранит один символ?",a:"char",w:["string","bool","double"]},
+  {q:"Что делает Convert.ToInt32()?",a:"Преобразует значение в целое число",w:["Создает массив","Выполняет цикл","Удаляет строку"]},
+  {q:"Что такое вложенный цикл?",a:"Цикл внутри другого цикла",w:["Цикл с условием","Бесконечный цикл","Тип массива"]},
+  {q:"Что такое многомерный массив?",a:"Массив с несколькими измерениями",w:["Строка","Цикл","Метод"]},
+  {q:"Что делает MessageBox.Show()?",a:"Выводит окно сообщения",w:["Создает массив","Выполняет SQL","Открывает файл"]},
+  {q:"Что такое обработчик кнопки?",a:"Метод, выполняемый при нажатии кнопки",w:["Тип данных","SQL-запрос","Массив"]},
+  {q:"Для чего используется ComboBox?",a:"Для выбора элемента из списка",w:["Для вывода изображения","Для сортировки массива","Для SQL-запросов"]},
+  {q:"Что делает SaveFileDialog?",a:"Позволяет выбрать место сохранения файла",w:["Удаляет файл","Создает массив","Выполняет цикл"]},
+  {q:"Что такое алгоритм?",a:"Последовательность действий для решения задачи",w:["Тип массива","База данных","Графический элемент"]},
+  {q:"Что такое компиляция?",a:"Преобразование кода в исполняемый файл",w:["Создание массива","Выполнение цикла","Работа с БД"]},
+  {q:"Что такое отладка программы?",a:"Поиск и исправление ошибок",w:["Создание интерфейса","Работа с файлами","SQL-запрос"]},
+  {q:"Что такое переменная?",a:"Именованная область памяти для хранения данных",w:["Тип цикла","Массив","SQL-запрос"]},
+  {q:"Что такое константа?",a:"Значение, которое не изменяется",w:["Тип массива","Метод сортировки","Цикл"]},
+  {q:"Что такое событие?",a:"Действие пользователя или системы",w:["Тип строки","Массив","SQL-запрос"]},
+  {q:"Что такое интерфейс программы?",a:"Внешний вид и элементы управления приложения",w:["Тип массива","SQL-запрос","Компилятор"]},
+  {q:"Что делает foreach в C#?",a:"Перебирает элементы коллекции",w:["Выполняет сортировку","Удаляет данные","Создает форму"]},
+  {q:"Что такое DataGridView?",a:"Табличный элемент отображения данных",w:["Цикл","Строковый метод","SQL-запрос"]},
+  {q:"Для чего используется SQL Server?",a:"Для хранения и обработки данных",w:["Для создания мобильных приложений","Для рисования интерфейса","Для сортировки массивов"]},
+  {q:"Что делает оператор +=?",a:"Прибавляет значение к переменной",w:["Делит число","Создает массив","Завершает программу"]},
+  {q:"Как называется процесс проверки данных?",a:"Валидация",w:["Компиляция","Сериализация","Навигация"]},
+  {q:"Что такое API-запрос?",a:"Обращение к внешнему сервису",w:["Тип массива","SQL-таблица","Цикл"]},
+  {q:"Что такое эмулятор Android?",a:"Программа для запуска мобильного приложения на ПК",w:["База данных","SQL-сервер","Метод массива"]},
+  {q:"Для чего нужен Button?",a:"Для выполнения действия при нажатии",w:["Для хранения текста","Для сортировки","Для SQL-запросов"]},
+  {q:"Что такое навигация Drawer?",a:"Боковое меню приложения",w:["SQL-запрос","Тип массива","Цикл"]},
+  {q:"Что такое FlatList?",a:"Компонент отображения списка",w:["Тип базы данных","Метод сортировки","SQL-запрос"]},
+  {q:"Что делает оператор ++?",a:"Увеличивает значение на 1",w:["Уменьшает значение","Делит число","Удаляет массив"]},
+  {q:"Что такое AsyncStorage?",a:"Хранилище локальных данных в React Native",w:["SQL-сервер","Цикл","Тип массива"]},
+  {q:"Что такое Windows Forms?",a:"Технология создания графических приложений в C#",w:["Система управления базами данных","Язык программирования","Тип мобильного приложения"]}
+];
+
+const MODULES = {
+  ux: { title: 'UX/UI & 3D', data: UX_DATA },
+  pm02: { title: 'ПМ-02', data: PM02_DATA },
+  csharp: { title: 'C# & Мобильные приложения', data: CSHARP_DATA }
+};
+
+let state = { module: null, questions: [], current: 0, correct: 0, wrong: 0, skipped: 0, mistakes: [], timer: 0, answered: false };
+let selMode = 'all', selTimer = 0;
+
+function formatText(t) {
+  return t.replace(/(`[^`]+`|<[^>]+>|[$][a-zA-Z_\[\]{}>\-0-9]+|[{}\[\]()]=?|===?|!==?|=>?|<?php|@[a-z]+|[.][a-z]+\(\)|[a-z_]+\(\)|[#.@][a-z]+|\/\/|%;|&amp;|\$_[A-Z]+|display:\s?\w+|grid-template-columns|font-[a-z]+|background-color|border-radius|[A-Z]{2,}|&&|\|\||%|Console\.[a-zA-Z]+|Array\.[a-zA-Z]+|Main\(\)|ToUpper|ToLower|Convert\.[a-zA-Z]+)/g,
+    m => `<code>${m.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</code>`);
+}
+
+function selectModule(mod) {
+  state.module = mod;
+  buildSetup();
+  show('setup-screen');
+}
+
+function buildSetup() {
+  const modeGrid = document.getElementById('mode-grid');
+  const timerGrid = document.getElementById('timer-grid');
+  modeGrid.innerHTML = '';
+  timerGrid.innerHTML = '';
+
+  const modes = [
+    {name: '100 вопросов', icon: '📚', val: 'all'},
+    {name: '50 вопросов', icon: '⚡', val: '50'},
+    {name: '20 вопросов', icon: '🎯', val: '20'}
+  ];
+  const timers = [
+    {name: 'Без таймера', icon: '♾️', val: '0'},
+    {name: '20 секунд', icon: '⏳', val: '20'},
+    {name: '10 секунд', icon: '🔥', val: '10'}
+  ];
+
+  modes.forEach(m => {
+    const el = document.createElement('div');
+    el.className = 'setup-card' + (m.val === 'all' ? ' selected' : '');
+    el.innerHTML = `<div class="setup-icon">${m.icon}</div><div class="setup-name">${m.name}</div><div class="setup-desc">Полный тест</div>`;
+    el.onclick = () => { document.querySelectorAll('#mode-grid .setup-card').forEach(e => e.classList.remove('selected')); el.classList.add('selected'); selMode = m.val; };
+    modeGrid.appendChild(el);
+  });
+
+  timers.forEach(t => {
+    const el = document.createElement('div');
+    el.className = 'setup-card' + (t.val === '0' ? ' selected' : '');
+    el.innerHTML = `<div class="setup-icon">${t.icon}</div><div class="setup-name">${t.name}</div><div class="setup-desc">На вопрос</div>`;
+    el.onclick = () => { document.querySelectorAll('#timer-grid .setup-card').forEach(e => e.classList.remove('selected')); el.classList.add('selected'); selTimer = parseInt(t.val); };
+    timerGrid.appendChild(el);
+  });
+
+  document.getElementById('setup-title').textContent = MODULES[state.module].title;
+}
+
+function startQuiz() {
+  const pool = MODULES[state.module].data;
+  let q = [...pool].sort(() => Math.random() - .5);
+  if (selMode === '50') q = q.slice(0, 50);
+  else if (selMode === '20') q = q.slice(0, 20);
+  state.questions = q;
+  state.current = 0;
+  state.correct = 0;
+  state.wrong = 0;
+  state.skipped = 0;
+  state.mistakes = [];
+  state.timer = selTimer;
+  document.getElementById('q-total').textContent = state.questions.length;
+  show('quiz-screen');
+  render();
+}
+
+function render() {
+  clearInterval(state.timerInt);
+  state.answered = false;
+  const q = state.questions[state.current];
+  const opts = [...[q.a, ...q.w]].sort(() => Math.random() - .5);
+
+  document.getElementById('q-num').textContent = state.current + 1;
+  document.getElementById('q-badge').textContent = `Вопрос ${state.current + 1} из ${state.questions.length}`;
+  document.getElementById('q-text').innerHTML = formatText(q.q);
+  document.getElementById('score').textContent = state.correct;
+  document.getElementById('progress').style.width = (state.current / state.questions.length * 100) + '%';
+
+  const optGrid = document.getElementById('options');
+  optGrid.innerHTML = '';
+  const L = ['A', 'B', 'C', 'D'];
+  opts.forEach((o, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = `<div class="option-letter">${L[i]}</div><div>${formatText(o)}</div>`;
+    btn.addEventListener('click', () => pick(o, q.a, btn));
+    optGrid.appendChild(btn);
+  });
+
+  document.getElementById('btn-next').classList.remove('visible');
+
+  if (state.timer > 0) {
+    let secs = state.timer;
+    const box = document.getElementById('timer');
+    box.style.display = 'block';
+    box.textContent = secs;
+    box.classList.remove('warn');
+    state.timerInt = setInterval(() => {
+      secs--;
+      box.textContent = secs;
+      if (secs <= 5) box.classList.add('warn');
+      if (secs <= 0) { clearInterval(state.timerInt); timeUp(); }
+    }, 1000);
+  } else {
+    document.getElementById('timer').style.display = 'none';
+  }
+}
+
+function timeUp() {
+  if (state.answered) return;
+  state.answered = true;
+  state.mistakes.push(state.questions[state.current]);
+  state.skipped++;
+  disOpts();
+  hlCorr(state.questions[state.current].a);
+  toast(`⏰ Время вышло!`, 'wrong');
+  document.getElementById('btn-next').classList.add('visible');
+}
+
+function pick(chosen, corr, btn) {
+  if (state.answered) return;
+  state.answered = true;
+  clearInterval(state.timerInt);
+  disOpts();
+  if (chosen === corr) {
+    btn.classList.add('correct');
+    state.correct++;
+    document.getElementById('score').textContent = state.correct;
+    toast('✓ Верно!', 'correct');
+  } else {
+    btn.classList.add('wrong');
+    state.wrong++;
+    state.mistakes.push(state.questions[state.current]);
+    hlCorr(corr);
+    toast('✗ Неверно', 'wrong');
+  }
+  document.getElementById('btn-next').classList.add('visible');
+}
+
+function hlCorr(corr) {
+  document.querySelectorAll('.option-btn').forEach(b => {
+    if (b.querySelector('div:last-child').textContent.trim() === corr.trim()) b.classList.add('correct');
+  });
+}
+
+function disOpts() {
+  document.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
+}
+
+function skipQuestion() {
+  if (state.answered) { nextQuestion(); return; }
+  clearInterval(state.timerInt);
+  state.answered = true;
+  state.mistakes.push(state.questions[state.current]);
+  state.skipped++;
+  disOpts();
+  hlCorr(state.questions[state.current].a);
+  toast('→ Пропущено', 'wrong');
+  document.getElementById('btn-next').classList.add('visible');
+}
+
+function nextQuestion() {
+  state.current++;
+  if (state.current >= state.questions.length) result();
+  else render();
+}
+
+function result() {
+  clearInterval(state.timerInt);
+  const total = state.questions.length;
+  const pct = Math.round(state.correct / total * 100);
+  document.getElementById('result-pct').innerHTML = pct + '<small>%</small>';
+  document.getElementById('stat-correct').textContent = state.correct;
+  document.getElementById('stat-wrong').textContent = state.wrong;
+  document.getElementById('stat-skip').textContent = state.skipped;
+
+  const ring = document.getElementById('ring');
+  const c = 502;
+  ring.style.stroke = pct >= 80 ? '#10b981' : pct >= 50 ? '#f59e0b' : '#ef4444';
+  setTimeout(() => { ring.style.strokeDashoffset = c - (c * pct / 100); }, 100);
+
+  let title, sub;
+  if (pct === 100) { title = '💯 Идеально!'; sub = 'Все ответы верны. Вы полностью готовы к экзамену!'; }
+  else if (pct >= 80) { title = '🎉 Отличный результат!'; sub = `${state.correct} из ${total} верно. Почти идеально!`; }
+  else if (pct >= 60) { title = '👍 Хорошо!'; sub = `${state.correct} из ${total} верно. Повторите ошибки.`; }
+  else if (pct >= 40) { title = '📖 Нужна практика'; sub = `${state.correct} из ${total}. Работайте над ошибками.`; }
+  else { title = '💪 Продолжайте учиться'; sub = `${state.correct} из ${total}. Не сдавайтесь!`; }
+
+  document.getElementById('result-title').textContent = title;
+  document.getElementById('result-sub').textContent = sub;
+
+  if (state.mistakes.length > 0) {
+    document.getElementById('mistakes-section').style.display = 'block';
+    document.getElementById('btn-retry-mistakes').classList.add('visible');
+    const list = document.getElementById('mistakes-list');
+    const show = state.mistakes.slice(0, 12);
+    list.innerHTML = show.map(m => `
+      <div class="mistake-item">
+        <div class="mistake-question">${formatText(m.q)}</div>
+        <div class="mistake-answer">✓ ${formatText(m.a)}</div>
+      </div>`).join('');
+    if (state.mistakes.length > 12) {
+      list.innerHTML += `<div style="color:var(--text-secondary);font-size:11px;padding-top:10px">...и ещё ${state.mistakes.length - 12}</div>`;
+    }
+  } else {
+    document.getElementById('mistakes-section').style.display = 'none';
+    document.getElementById('btn-retry-mistakes').classList.remove('visible');
+  }
+
+  show('result-screen');
+}
+
+function retryMistakes() {
+  const pool = [...state.mistakes];
+  state.mistakes = [];
+  state.questions = pool.sort(() => Math.random() - .5);
+  state.current = 0;
+  state.correct = 0;
+  state.wrong = 0;
+  state.skipped = 0;
+  document.getElementById('q-total').textContent = state.questions.length;
+  show('quiz-screen');
+  render();
+}
+
+function goHome() {
+  clearInterval(state.timerInt);
+  show('home-screen');
+}
+
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+let toastTm;
+function toast(msg, cls) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast ' + cls + ' show';
+  clearTimeout(toastTm);
+  toastTm = setTimeout(() => el.classList.remove('show'), 2200);
+}
+</script>
+</body>
+</html>
